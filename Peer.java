@@ -325,24 +325,42 @@ public class Peer {
         fileData.put(chunkIndex, data);
     }
 
+    // public void writeFile() throws Exception {
+
+    //     fileData = FileUpdation.sortChunkedData(fileData);
+    //     File file = new File("./input_files/" + ParentThread.peerID + "/thefile");
+    //     if (file.createNewFile()) {
+    //         FileWriter fileWriter = new FileWriter(
+    //                 "./input_files/" + ParentThread.peerID + "/" + GeneralConfig.nameOfFile,
+    //                 true);
+    //         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+
+    //         for (HashMap.Entry<Integer, byte[]> entry : fileData.entrySet()) {
+    //             bufferedWriter.write(new String(entry.getValue(), StandardCharsets.UTF_8));
+    //         }
+    //         bufferedWriter.close();
+    //         fileWriter.close();
+    //     }
+
+    // }
+
     public void writeFile() throws Exception {
+    // Ensure chunks are sorted by index
+    fileData = FileUpdation.sortChunkedData(fileData);
 
-        fileData = FileUpdation.sortChunkedData(fileData);
-        File file = new File("./input_files/" + ParentThread.peerID + "/thefile");
-        if (file.createNewFile()) {
-            FileWriter fileWriter = new FileWriter(
-                    "./input_files/" + ParentThread.peerID + "/" + GeneralConfig.nameOfFile,
-                    true);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+    // Always write directly to the actual file name (e.g., tree.jpg)
+    File outFile = new File("./input_files/" + ParentThread.peerID + "/" + GeneralConfig.nameOfFile);
 
-            for (HashMap.Entry<Integer, byte[]> entry : fileData.entrySet()) {
-                bufferedWriter.write(new String(entry.getValue(), StandardCharsets.UTF_8));
-            }
-            bufferedWriter.close();
-            fileWriter.close();
+    // Overwrite if it already exists
+    try (FileOutputStream fos = new FileOutputStream(outFile, false)) {
+        for (HashMap.Entry<Integer, byte[]> entry : fileData.entrySet()) {
+            fos.write(entry.getValue());
         }
-
+        fos.flush();
     }
+
+    // (Optional) You don't really need "./input_files/[peerID]/thefile" at all
+}
 
     public static HashMap<Integer, Double> sortDownloadSpeeds(HashMap<Integer, Double> map) throws Exception {
         List<Map.Entry<Integer, Double>> list = new LinkedList<Map.Entry<Integer, Double>>(map.entrySet());
