@@ -2,6 +2,8 @@ Team members :
 1. Parvathi Nalla 
 2. Bindhu sree reddy Alla
 
+Github Link: https://github.com/parvathinalla/BitTorrent
+
 This project implements a simplified peer-to-peer (P2P) file sharing system modeled after the BitTorrent protocol. The system enables multiple peers to exchange pieces of a file over TCP connections, maintain information about available pieces, and coordinate downloads through choking, unchoking, and interest mechanisms.
 
 The implementation follows the project specification provided in the UF CISE course.
