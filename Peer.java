@@ -255,11 +255,14 @@ public class Peer {
                                     piecesRequired.andNot(requestedPieces);
 
                                 }
+                                System.out.println(">>> debug: total pieces received map size = " + fileData.size());
+
 
                                 if (fileData.size() == GeneralConfig.overallPieces) {
 
                                     ParentThread.log.logInfo(
                                             "Peer " + ParentThread.peerID + " has downloaded the complete file.");
+                                            
                                     if (!fileWritten.get(ParentThread.peerID)) {
                                         numberOfCompleteDownloads += 1;
                                         writeFile();
