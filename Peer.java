@@ -344,23 +344,55 @@ public class Peer {
 
     // }
 
-    public void writeFile() throws Exception {
-    // Ensure chunks are sorted by index
-    fileData = FileUpdation.sortChunkedData(fileData);
+//     public void writeFile() throws Exception {
+//     // Ensure chunks are sorted by index
+//     fileData = FileUpdation.sortChunkedData(fileData);
 
-    // Always write directly to the actual file name (e.g., tree.jpg)
-    File outFile = new File("./input_files/" + ParentThread.peerID + "/" + GeneralConfig.nameOfFile);
+//     // Always write directly to the actual file name (e.g., tree.jpg)
+//     File outFile = new File("./input_files/" + ParentThread.peerID + "/" + GeneralConfig.nameOfFile);
 
-    // Overwrite if it already exists
-    try (FileOutputStream fos = new FileOutputStream(outFile, false)) {
-        for (HashMap.Entry<Integer, byte[]> entry : fileData.entrySet()) {
-            fos.write(entry.getValue());
+//     // Overwrite if it already exists
+//     try (FileOutputStream fos = new FileOutputStream(outFile, false)) {
+//         for (HashMap.Entry<Integer, byte[]> entry : fileData.entrySet()) {
+//             fos.write(entry.getValue());
+//         }
+//         fos.flush();
+//     }
+
+//     // (Optional) You don't really need "./input_files/[peerID]/thefile" at all
+// }
+        public void writeFile() {
+    try {
+        // sortChunkedData may throw Exception -> handled here
+        HashMap<Integer, byte[]> sorted = FileUpdation.sortChunkedData(fileData);
+
+        String fileLocation = "./input_files/" + ParentThread.peerID + "/" + GeneralConfig.nameOfFile;
+        File outFile = new File(fileLocation);
+        File parentDir = outFile.getParentFile();
+        if (parentDir != null && !parentDir.exists()) parentDir.mkdirs();
+
+        try (FileOutputStream fos = new FileOutputStream(outFile, false)) {
+            // iterate in entry order returned by sortChunkedData
+            for (Map.Entry<Integer, byte[]> entry : sorted.entrySet()) {
+                byte[] pieceBytes = entry.getValue();
+                if (pieceBytes != null && pieceBytes.length > 0) {
+                    fos.write(pieceBytes);
+                }
+            }
+            fos.flush();
         }
-        fos.flush();
-    }
 
-    // (Optional) You don't really need "./input_files/[peerID]/thefile" at all
+        fileWritten.put(ParentThread.peerID, true);
+        System.out.println("File reconstructed at: " + fileLocation);
+
+    } catch (Exception e) {
+        // handle the checked exception from sortChunkedData + any other runtime exceptions
+        System.err.println("Error reconstructing file: " + e.getMessage());
+        e.printStackTrace();
+        // optional: set a flag or retry logic
+    }
 }
+
 
     public static HashMap<Integer, Double> sortDownloadSpeeds(HashMap<Integer, Double> map) throws Exception {
         List<Map.Entry<Integer, Double>> list = new LinkedList<Map.Entry<Integer, Double>>(map.entrySet());
