@@ -3,6 +3,7 @@ Team members :
 2. Bindhu sree reddy Alla
 
 Github Link: https://github.com/parvathinalla/BitTorrent
+https://meet.google.com/sxg-nsgn-yto?pli=1
 
 This project implements a simplified peer-to-peer (P2P) file sharing system modeled after the BitTorrent protocol. The system enables multiple peers to exchange pieces of a file over TCP connections, maintain information about available pieces, and coordinate downloads through choking, unchoking, and interest mechanisms.
 
